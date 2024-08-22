@@ -6,17 +6,17 @@ class priority_queue
     std::vector<T> heap;
 private: void heapify(int n, int i)
     {
-        int smallest = i;
+        int largest = i;
         int l = (i << 1) + 1;
         int r = l + 1;
-        if(l < n && heap[l] < heap[smallest])
-            smallest = l;
-        if(r < n && heap[r] < heap[smallest])
-            smallest = r;
-        if(smallest != i)
+        if(l < n && heap[largest] < heap[l])
+            largest = l;
+        if(r < n && heap[largest] < heap[r])
+            largest = r;
+        if(largest != i)
         {
-            std::swap(heap[i], heap[smallest]);
-            heapify(n, smallest);
+            std::swap(heap[i], heap[largest]);
+            heapify(n, largest);
         }
     }
 public: void push(T val)
@@ -26,10 +26,13 @@ public: void push(T val)
         while(i > 0)
         {
             int p = (i - 1) >> 1;
-            if(!(heap[i] < heap[p]))
+            if(heap[p] < heap[i])
+            {
+                std::swap(heap[p], heap[i]);
+                i = p;
+            }
+            else
                 break;
-            std::swap(heap[p], heap[i]);
-            i = p;
         }
     }
     void pop()
@@ -70,9 +73,6 @@ int main()
         std::cin >> val;
         p.push(Element(val, i, time++));
     }
-    p.pop();
-    p.pop();
-    p.push(Element(1, 1, time++));
     while(!p.empty())
     {
         Element e = p.top();
